@@ -1,0 +1,2069 @@
+<html class="no-js" lang="en">
+<!--<![endif]-->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate, no-store">
+    <meta http-equiv="Content-Style-Type" content="text/css">
+    <link href="/rioserv-pagos/theme/stylePrint.css?version=1.0.2" rel="stylesheet" type="text/css" media="print">
+    <link href="/rioserv-pagos/theme/jquery-ui-1.10.4.custom.css?version=1.0.4" rel="stylesheet" type="text/css">
+
+    <!-- bootstrap -->
+    <link href="/rioserv-pagos/theme/newCash/bootstrap/css/bootstrap.css?version=1.0" rel="stylesheet" type="text/css">
+    <link href="/rioserv-pagos/theme/newCash/bootstrap/css/bootstrap-grid.min.css" rel="stylesheet" type="text/css">
+    <link href="/rioserv-pagos/theme/newCash/bootstrap/css/bootstrap-reboot.min.css" rel="stylesheet" type="text/css">
+
+
+
+    <title>
+
+
+    </title>
+
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/commons.js?version=20200624170538"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/comex.jsp"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/Monto.js?version=1.0.4"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/commons_validation.js?version=1.0.5"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/cheqimpo.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-1.12.2.min.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-ui.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery.numeric-1.4.1.js"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-ajaxRioserv.1.1.js?version=20200624170538"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-paginador.js?version=1.3.6"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-autorizacion.js?verion=1.8"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/theme/newCash/bootstrap/js/bootstrap.bundle.min.modif.js?verion=1.9.4"></script>
+    <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/theme/newCash/bootstrap/js/bootstrap.min.modif.js?verion=1.9.4"></script>
+</head>
+
+<body>
+    <script>
+        function opcionCancelar2() {
+            document.location.href = "/rioserv-accessmanager/paginaDescanso.do?mode=init2&modulo=rioserv-pagos";
+        }
+    </script>
+    <script>
+        function cambiarTamanioFrame(idPopUpFrame, tamW, tamH) {
+            var tamWAux = tamW;
+            var tamHAux = tamH;
+            $("#" + idPopUpFrame).height(tamHAux);
+            var widthPost = (tamWAux - $(".generalwrapper").width()) * (1 / 15);
+            tamWAux = (tamWAux - widthPost);
+            if ($("#" + idPopUpFrame).data("originalWidth") == null || $("#" + idPopUpFrame).data("originalWidth") == undefined) {
+                $("#" + idPopUpFrame).data("originalWidth", tamWAux);
+            } else {
+                tamWAux = $("#" + idPopUpFrame).data("originalWidth");
+            }
+            $("#" + idPopUpFrame).width(tamWAux);
+        }
+        $(document).ready(function() {
+            /*$("select").each(function(){
+                if(!$(this).val()){
+                    $(this).css('color','#767676')
+                }else{
+                    $(this).css('color','black')
+                }
+        
+            })
+            $("select").change(function() {
+                if(!$(this).val()){
+                    $(this).css('color','#767676')
+                }else{
+                    $(this).css('color','black')
+                }
+            });
+            $("select").click(function(){
+                $(this).find('option').each(function(){
+                    if(!$(this).val()){
+                        $(this).css('color','#767676')
+                    }else{
+                        $(this).css('color','black')
+                    }	
+                });
+            })*/
+            //borrar el align
+            $(".cash-table-list").attr("align", "");
+
+            $("#ventana-avisos").dialog({
+                autoOpen: false,
+                height: "auto",
+                closeText: "Aceptar",
+                width: 500,
+                modal: true,
+                resizable: false,
+                draggable: false,
+                title: "Aviso",
+                iconCloseAvail: false,
+                buttons: {
+                    Aceptar: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+            //mostrarAviso("Varios anda mas");
+            $("#ventana-confirm").dialog({
+                autoOpen: false,
+                height: "auto",
+                closeText: "Cancelar",
+                width: 500,
+                modal: true,
+                iconCloseAvail: false,
+                buttons: {
+                    Aceptar: function() {},
+                    Cancelar: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            });
+
+        });
+
+        function opcionCancelar() {
+            if (window.parent && window.parent.opcionCancelar != undefined) {
+                window.parent.opcionCancelar();
+            } else {
+                opcionCancelar2();
+            }
+        }
+
+        /////////////////////IMPORT DE COMPONENTES GENERALES	
+        var rioserv = (function() {
+            components = {};
+
+            function _useComponent(name) {
+                var conf = components[name];
+                callComponent(name, conf.globalConfig, conf.operation, conf.params);
+            }
+
+            function _registrerComponent(name, config) {
+                components[name] = config;
+            }
+            return {
+                useComponent: _useComponent,
+                registrerComponent: _registrerComponent
+            };
+        })();
+
+        var dateOperations = ["beforeToday",
+            "beforeEqToday",
+            "afterToday",
+            "afterEqToday",
+            "dateFrom",
+            "between"
+        ];
+        var numberOperations = ["integer",
+            "decimal",
+            "lessThan"
+        ];
+        var globalDateConfig = {
+            maxDate: null,
+            minDate: null,
+            img: '/rioserv-pagos/images/ico_calendario.gif'
+        };
+        var globalNumberConfig = {
+            decimal: ",",
+            decimalPlaces: 2,
+            negative: false
+        };
+
+        rioserv.registrerComponent("date", {
+            globalConfig: globalDateConfig,
+            operation: dateOperations
+        });
+        rioserv.registrerComponent("number", {
+            globalConfig: globalNumberConfig,
+            operation: numberOperations
+        });
+    </script>
+    <style>
+        .cash-old {
+            display: none;
+        }
+        /* ========================================================================
+         Component: typo
+     ========================================================================== */
+        /* @import url(/fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,400italic); */
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-Rg';
+            font-style: normal;
+            src: url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Rg.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-Rg"), local("SantanderMicroTextW01-Rg"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Rg.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Rg.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Rg.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Rg.ttf") format("truetype");
+        }
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-Bold';
+            src: url("./rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Bold.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-Bold"), local("SantanderMicroTextW01-Bold"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Bold.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Bold.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Bold.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Bold.ttf") format("truetype");
+        }
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-Light';
+            src: url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Light.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-Light"), local("SantanderMicroTextW01-Light"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Light.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Light.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Light.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-Light.ttf") format("truetype");
+        }
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-It';
+            src: url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-It.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-It"), local("SantanderMicroTextW01-It"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-It.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-It.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-It.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-It.ttf") format("truetype");
+        }
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-BdIt';
+            src: url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-BdIt.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-BdIt"), local("SantanderMicroTextW01-BdIt"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-BdIt.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-BdIt.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-BdIt.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-BdIt.ttf") format("truetype");
+        }
+        
+        @font-face {
+            font-family: 'SantanderMicroTextW01-LtIt';
+            src: url("https://obcm5.ar.bsch/rioserv-comex/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-LtIt.eot");
+            /* IE9 Compat Modes */
+            src: local("SantanderMicroTextW01-LtIt"), local("SantanderMicroTextW01-LtIt"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-LtIt.eot?#iefix") format("embedded-opentype"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-LtIt.woff2") format("woff2"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-LtIt.woff") format("woff"), url("/rioserv-pagos/fonts/SantanderMicroTextW01/SantanderMicroTextW01-LtIt.ttf") format("truetype");
+        }
+        
+        .santander-regular {
+            font-family: "SantanderMicroTextW01-Rg";
+        }
+        
+        .santander-bold {
+            font-family: "SantanderMicroTextW01-Bold";
+        }
+        
+        .santander-light {
+            font-family: "SantanderMicroTextW01-Light";
+        }
+        
+        .santander-italic {
+            font-family: "SantanderMicroTextW01-It";
+        }
+        
+        .santander-bold-italic {
+            font-family: "SantanderMicroTextW01-BdIt";
+        }
+        
+        .santander-light-italic {
+            font-family: "SantanderMicroTextW01-LtIt";
+        }
+        /**
+    css generico
+    */
+        
+        h1 {
+            font-size: 2.625rem;
+            line-height: 50px;
+            letter-spacing: 0;
+        }
+        
+        h2 {
+            font-size: 2.25rem;
+            line-height: 43px;
+            letter-spacing: 0;
+        }
+        
+        h3 {
+            font-size: 2rem;
+            line-height: 38px;
+            letter-spacing: 0;
+        }
+        
+        h4 {
+            font-size: 1.75rem;
+            line-height: 34px;
+            letter-spacing: 0;
+        }
+        
+        h5 {
+            font-size: 1.5rem;
+            line-height: 29px;
+            letter-spacing: 0;
+        }
+        
+        h6 {
+            font-size: 1.25rem;
+            line-height: 28px;
+            letter-spacing: 0;
+        }
+        
+        .text-large {
+            font-size: 1.125rem !important;
+            /**18px*/
+            line-height: 27px;
+            letter-spacing: 0;
+        }
+        
+        .text-medium {
+            font-size: 1rem !important;
+            /**16px*/
+            line-height: 24px;
+            letter-spacing: 0;
+        }
+        
+        .text-small {
+            font-size: 0.875rem !important;
+            /**14px*/
+            line-height: 21px;
+            letter-spacing: 0;
+        }
+        
+        .text-xsmall {
+            font-size: 0.75rem !important;
+            /**12px*/
+            line-height: 18px;
+            letter-spacing: 0;
+        }
+        
+        .cash-button-white:hover {
+            color: #ec0000
+        }
+        
+        .cash-button-red:hover {
+            color: white
+        }
+        
+        A:link {
+            text-decoration: none;
+        }
+        
+        A:visited {
+            text-decoration: none;
+        }
+        
+        A:active {
+            text-decoration: none;
+        }
+        
+        ul {
+            list-style: none;
+            padding: 0rem 1rem 1rem 1rem;
+        }
+        
+        .items-cash li::before {
+            content: "\2022";
+            color: #ec0000;
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+        
+        .color-red {
+            color: #ec0000;
+        }
+        /**
+    FIN
+    */
+        
+        body {
+            font-family: "SantanderMicroTextW01-Rg";
+            color: #656565;
+            font-size: 0.875rem;
+        }
+        
+        .cash-table-paginate-content {
+            display: table-row !important;
+        }
+        
+        .cash-table-list-footer {
+            width: 70%;
+            margin-left: 15%;
+            margin-right: 15%;
+            margin-top: 20px;
+        }
+        
+        .cash-table-title {
+            width: 234px;
+            height: 32px;
+            font-size: 24px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.33;
+            letter-spacing: normal;
+            color: #0d0d0d;
+            /*padding-bottom: 20px;*/
+            padding-top: 20px;
+        }
+        
+        .cash-table-subtitle {
+            width: 430px;
+            height: 24px;
+            opacity: 0.8;
+            font-family: SantanderMicroTextW01-Rg;
+            font-size: 18px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: -0.3px;
+            color: #303030;
+        }
+        
+        .cash-table-list {
+            /*width: 1044px;
+      height: 232px;*/
+            width: 100%;
+            border-radius: 8px;
+            border: solid 1px #dfdfdf;
+            text-align: left !important;
+        }
+        
+        .cash-table-field-img-state {
+            text-align: right !important;
+            border: none !important;
+            width: auto !important;
+        }
+        
+        .cash-table-field-text-state {
+            text-align: left !important;
+            padding-bottom: 5%;
+            border: none !important;
+            width: auto !important;
+        }
+        
+        .cash-table-list thead>tr {
+            /*title table*/
+            width: 1044px;
+            height: 56px;
+            opacity: 0.8;
+            border-radius: 8px;
+            background-color: #ececec;
+        }
+        
+        .cash-table-list thead>tr>th {
+            width: 155px;
+            height: 24px;
+            font-family: SantanderMicroTextW01-Bold;
+            font-size: 14px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.71;
+            letter-spacing: normal;
+            text-align: left;
+            color: #444444;
+            border-right: solid 1px #dfdfdf;
+            padding-left: 10px;
+        }
+        
+        .cash-table-list tbody>tr:nth-child(2n) {
+            /* width: 1044px;
+      height: 56px;
+      opacity: 0.49;*/
+            background-color: #f1f1f1;
+        }
+        
+        .cash-table-list tbody>tr>td {
+            width: 161px;
+            height: 50px;
+            font-family: SantanderMicroTextW01-Rg;
+            font-size: 14px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.71;
+            letter-spacing: normal;
+            text-align: left;
+            color: #444444;
+            border-right: solid 1px #dfdfdf;
+            padding-left: 10px;
+        }
+        
+        .cash-table-list-action {
+            text-align: center !important;
+        }
+        /*Buttons*/
+        
+        .cash-button-red {
+            min-width: 120px;
+            height: 40px;
+            border-radius: 100px;
+            background-color: #ec0000;
+            border-style: none;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .cash-button-red:disabled {
+            background-color: #cccccc;
+        }
+        
+        .cash-button-red div {
+            /* width: 108.1px;*/
+            height: 24px;
+            /*font-family: SantanderMicroTextW01-Bd;*/
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            text-align: center;
+            color: #ffffff;
+        }
+        
+        .cash-button-separator {
+            display: inline-block;
+            width: 24px;
+        }
+        
+        .cash-button-white {
+            /*width: 150px;*/
+            height: 40px;
+            border-radius: 100px;
+            background-color: white;
+            border-style: solid;
+            border-color: #ec0000;
+            color: #ec0000;
+            cursor: pointer;
+        }
+        
+        .cash-button-grey {
+            height: 40px;
+            border-radius: 100px;
+            background-color: white;
+            border-style: solid;
+            border-color: #dfdfdf;
+            color: #dfdfdf;
+            cursor: pointer;
+        }
+        
+        .cash-button-white div {
+            width: 112px;
+            height: 24px;
+            /*font-family: SantanderMicroTextW01;*/
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            text-align: center;
+            color: #ec0000;
+        }
+        
+        .cash_secudary_button {
+            margin-top: 50px;
+        }
+        
+        .cash_secudary_button_print {
+            text-align: right;
+        }
+        
+        .cash-print-download {
+            display: inline-block;
+            cursor: pointer;
+        }
+        
+        .cash-button-white:disabled {
+            border-color: #cccccc !important;
+        }
+        
+        .cash-button-white:disabled div {
+            color: #cccccc !important
+        }
+        /**inputs*/
+        
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url(./images/nuevoCash/sys-018-chevron-down@2x.png) 96% / 30px no-repeat white;
+            width: 400px;
+            height: 28px !important;
+        }
+        
+        select::-ms-expand {
+            display: none;
+        }
+        
+        .inputAutocomplete {
+            width: 365px !important;
+        }
+        
+        .link-cash {
+            text-decoration: none !important;
+            color: #ec0100 !important;
+        }
+        
+        select,
+        input[type='text'] {
+            border-left: 0;
+            border-top: 0;
+            border-right: 0;
+            border-bottom-color: #1d252d;
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            border-bottom-width: 1px;
+            outline: none !important;
+            padding-left: 15px;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            font-family: SantanderMicroTextW01-Rg !important;
+        }
+        
+         ::placeholder {
+            /* Chrome, Firefox, Opera, Safari 10.1+ */
+            /*estilos para placeholder*/
+            color: #767676;
+        }
+        
+         :-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: #767676;
+        }
+        
+         ::-ms-input-placeholder {
+            /* Microsoft Edge */
+            color: #767676;
+        }
+        
+        .cash-text-min {
+            height: 19px;
+            font-family: SantanderMicroTextW01-Rg;
+            font-size: 14px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            color: #6f7779;
+            padding-left: 15px;
+            width: 100%;
+            padding-bottom: 20px;
+            margin-bottom: 60px;
+        }
+        /*TEMPLATE*/
+        
+        .cash-title {
+            width: 100%;
+            height: 40px;
+            /*font-family: SantanderMicroTextW01;*/
+            font-size: 14px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.29;
+            letter-spacing: normal;
+            color: #ec0000;
+            border-bottom: 1px solid #e6e7e8;
+        }
+        
+        .cash-text-medium {
+            height: 48px;
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.5;
+            letter-spacing: normal;
+            color: #767676;
+        }
+        /*CLASES VIEJAS*/
+        
+        div#ventana-avisos-titulo {
+            text-align: center;
+            padding: 2px 15px 2px 0;
+            height: 26px;
+            font-weight: bold;
+            border: 1px solid #e6e7e8;
+            vertical-align: middle;
+            font-size: 12px;
+            color: #414042;
+            background: #f2f2f2;
+        }
+        
+        .ventanaAvisosText {
+            text-align: left;
+            padding: 2px 0 2px 15px;
+            font-family: 'Open Sans', Arial, sans-serif;
+            background: #FFFFFF;
+            font-size: 13px;
+        }
+        /* Start by setting display:none to make this hidden.
+       Then we position it in relation to the viewport window
+       with position:fixed. Width, height, top and left speak
+       for themselves. Background we set to 80% white with
+       our animation centered, and no-repeating */
+        
+        .loadingClass {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+        }
+        /* When the body has the loading class, we turn
+       the scrollbar off with overflow:hidden */
+        
+        body.loading {
+            overflow: hidden;
+        }
+        /* Anytime the body has the loading class, our
+       modal element will be visible */
+        
+        body.loading .loadingClass {
+            display: block;
+        }
+        
+        .conseparador-top {
+            display: block;
+            font-size: 12px;
+            line-height: 14px;
+            padding: 10px 0;
+            border-top: 1px solid #e6e7e8;
+        }
+        
+        .legal {
+            margin: 10px;
+        }
+        
+        button.color1 {
+            background: url(../rioserv-comex/images/trabajo/button_color1.jpg) repeat-x left top;
+            height: 35px;
+            line-height: 35px;
+            color: #ffffff;
+            border: none;
+            padding: 0 30px;
+        }
+        
+        button.color1 div {
+            background: url(../images/trabajo/arrow-white.gif) no-repeat left center;
+        }
+        
+        button.color2 {
+            background: url(../images/trabajo/button_color2.jpg) repeat-x left top;
+            height: 35px;
+            line-height: 35px;
+            color: #ff0000;
+            border: 1px solid #dfdfdf;
+            padding: 0 30px;
+            margin-left: 10px;
+        }
+        
+        .generalwrapper {
+            background: #ffffff;
+            width: 990px;
+        }
+        
+        .generalwrapperfull {
+            background: #ffffff;
+            width: 1280px;
+        }
+        /****autocomplete**/
+        
+        .cash-row-down-autocomplete {
+            background: url(./images/nuevoCash/sys-018-chevron-down@2x.png) no-repeat scroll 0% 0% / 60%;
+            display: block;
+            height: 30px;
+            width: 50px;
+            position: relative;
+            /* left: 0.3%; */
+            margin-top: 0px;
+            float: right;
+            cursor: pointer;
+        }
+        
+        .cash-content-autocomplete {
+            /*deprecated*/
+            width: 500px;
+            border-bottom: 1px black;
+            border-bottom-width: 1px;
+            border-bottom-color: black;
+            border-bottom-style: solid;
+            margin: 0px;
+            height: 31px;
+        }
+        
+        .cash-content-autocomplete-v2 {
+            width: 500px;
+            border-bottom: 1px black;
+            border-bottom-width: 1px;
+            border-bottom-color: #D8D8D8;
+            border-bottom-style: solid;
+            margin: 0px;
+        }
+        
+        .cash-input-autocomplete {
+            border-bottom: 0;
+        }
+        /**custom element jquery*/
+        
+        .ui-menu-item a {
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            font-family: SantanderMicroTextW01-Rg !important;
+        }
+        
+        .ui-widget-content {
+            border-top-color: black;
+        }
+        /**ESTADOS*/
+        
+        .cash-state-proc-cotiza {
+            background: url(./images/nuevoCash/func-126-proc_auto@2x.png) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-proc-liq {
+            background: url(./images/nuevoCash/func-126-proc_liq@2x.png) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-rechazada {
+            background: url(./images/nuevoCash/func-023-rechazada@2x.png) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-tramite {
+            background: url(./images/nuevoCash/func-023-tramite@2x.png) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-pend-aut {
+            background: url(./images/nuevoCash/sys-018-chevron-down@2x.png) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-parci-aut {
+            background: url(./images/nuevoCash/func-023-parcialmente@2x) no-repeat scroll 0% 0% / 60%;
+        }
+        
+        .cash-state-autorizado {
+            background: url(./images/nuevoCash/func-023-autorizada@2x) no-repeat scroll 0% 0% / 60%;
+        }
+        /**FORMATO EN TABLAS**/
+        
+        .cash-field-between-inputs {
+            height: 30px;
+        }
+        /**PAGINADOR**/
+        
+        .cash-box-info {
+            width: 230px;
+            /* height: 90px; */
+            border-radius: 8px;
+            box-shadow: 0 2px 16px 0 rgba(0, 0, 0, 0.16);
+            background-color: #ffffff;
+            padding-top: 30px;
+            padding-right: 30px;
+            padding-bottom: 21px;
+        }
+        
+        .cash-sub-title-text-top {
+            vertical-align: text-top;
+        }
+        
+        .cash-check-selector-td {
+            border-style: none !important;
+        }
+        
+        .cash-table-paginate-item {
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: normal;
+            text-align: center;
+            color: #000000;
+            cursor: pointer;
+        }
+        
+        .cash-selected {
+            color: #ec0000;
+            cursor: auto;
+        }
+        
+        .cash-table-paginate-item-separator {
+            margin-left: 5px;
+            margin-right: 5px;
+            font-size: 16px;
+        }
+        
+        .cash-table-field-check {
+            border-style: none !important;
+            padding-left: 20px;
+        }
+        
+        .cash-table-field-check input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+        
+        .cash-text-info-violeta {
+            width: 579px;
+            height: 28px;
+            /*font-family: SantanderMicroTextW01-Bd;*/
+            font-size: 20px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: 1.4;
+            letter-spacing: normal;
+            color: #9e3667;
+            font-weight: bold;
+        }
+        /***pantalla de espera*/
+        
+        body .whirl:after {
+            border-top-color: #ec0000;
+        }
+        
+        .whirl:after {
+            z-index: 2;
+            content: "";
+            height: 40px;
+            width: 40px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -20px 0 0 -20px;
+            -webkit-transition: all .75s ease 0s;
+            transition: all .75s ease 0s;
+            border-radius: 100%;
+            border-top: 4px solid #555555;
+            -webkit-animation: rotating .75s infinite linear;
+            animation: rotating .75s infinite linear;
+            -webkit-transform-origin: center;
+            transform-origin: center;
+        }
+        
+        body .whirl:before {
+            content: attr(data-spinner-text);
+            display: block;
+            background-color: #f0f0f0;
+            opacity: 0.7;
+        }
+        
+        .whirl:before {
+            content: "";
+            z-index: 1;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            background-color: #999999;
+            opacity: 0.6;
+        }
+        
+        @-webkit-keyframes rotating
+        /* Safari and Chrome */
+        
+        {
+            from {
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        
+        @keyframes rotating {
+            from {
+                -ms-transform: rotate(0deg);
+                -moz-transform: rotate(0deg);
+                -webkit-transform: rotate(0deg);
+                -o-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -ms-transform: rotate(360deg);
+                -moz-transform: rotate(360deg);
+                -webkit-transform: rotate(360deg);
+                -o-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+        /*Inputs*/
+        
+        .form__group {
+            position: relative;
+            padding: 15px 0 0;
+            width: 100%;
+        }
+        
+        .form__field {
+            font-family: 'SantanderMicroText';
+            font-size: 16px;
+            font-weight: normal;
+            font-stretch: normal;
+            font-style: normal;
+            line-height: normal;
+            letter-spacing: -0.27px;
+            /*color: #ffffff;*/
+            font-weight: 200;
+            background-color: transparent;
+            width: 420px;
+            opacity: 0.8;
+            border: 0;
+            /*border-bottom: 1px solid #D8D8D8;*/
+            outline: 0;
+            padding: 0px;
+            margin-left: 10px;
+            padding-top: 30px;
+            padding-left: 10px;
+        }
+        
+        .form__field::placeholder {
+            color: transparent;
+        }
+        
+        .form__field:placeholder-shown~.form__label {
+            font-size: 16px;
+            cursor: text;
+            top: 47px;
+            left: 18px;
+        }
+        
+        .form__field:valid {
+            /*background-color: rgba(0, 0, 0, .3);*/
+            border-radius: 10px 10px 0px 0px;
+            padding-bottom: 6px;
+            border-width: 2px;
+            opacity: 0.8;
+        }
+        
+        .form__field:focus {
+            /*background-color: rgba(0, 0, 0, .3);*/
+            border-radius: 10px 10px 0px 0px;
+            border-width: 2px;
+            padding-bottom: 6px;
+            /*	opacity: 0.8;*/
+        }
+        
+        .form__field_error {
+            font-family: 'SantanderMicroText';
+            font-size: 12px;
+            font-stretch: normal;
+            font-style: normal;
+            font-weight: 100;
+            line-height: 1.75;
+            letter-spacing: 0.09px;
+            color: #ffffff;
+            font-weight: 200;
+            background-color: #cc0000;
+            border: 1px solid #cc0000 !important;
+            width: 420px;
+            height: 100%;
+            border: 0;
+            outline: 0;
+            margin-left: 10px;
+            padding-left: 10px;
+        }
+        
+        .form__field_error_parent label {
+            color: #cc0000 !important;
+            font-family: 'SantanderMicroText-Bd' !important;
+        }
+        
+        .form__field_error_parent input {
+            border: 1px solid red !important;
+        }
+        
+        .form__label {
+            /*color: white;*/
+            font-size: 12px;
+            position: absolute;
+            display: block;
+            transition: 0.2s;
+            /*	opacity: 0.8;*/
+            top: 26px;
+            left: 18px;
+        }
+        
+        .form__field:focus~.form__label {
+            position: absolute;
+            top: 25px;
+            display: block;
+            transition: 0.2s;
+            font-size: 12px;
+        }
+        
+        input[type='text'] {
+            margin-bottom: 0px;
+            padding-bottom: 6px;
+        }
+        
+        .cash-row-down-autocomplete {
+            width: 44px !important;
+            margin-top: 30px !important;
+        }
+        
+        .ui-widget-content {
+            border-style: none !important;
+            top: 170px !important;
+            background-color: transparent;
+            ;
+        }
+        
+        #ui-id-1 {
+            width: 436px !important;
+        }
+        
+        #ui-id-2 {
+            width: 259px !important;
+        }
+        
+        .ui-menu-item {
+            background-color: white;
+        }
+        
+        .ui-menu-item a:active {
+            text-decoration: none;
+        }
+        
+        .ui-menu-item a:visited {
+            text-decoration: none;
+        }
+        
+        .ui-autocomplete li {
+            border-left: 1px #D8D8D8 solid;
+            border-right: 1px #D8D8D8 solid;
+            border-top-style: none;
+            border-bottom-style: none;
+        }
+        
+        .ui-autocomplete li:last-child {
+            border-bottom: 1px #D8D8D8 solid;
+        }
+        
+        .ui-autocomplete li:first-child {
+            border-top: 1px #D8D8D8 solid;
+        }
+        
+        .triangle-down {
+            width: 8px;
+            height: 8px;
+            border: 2px solid #ec0000;
+            border-left: 0;
+            border-top: 0;
+            transform: rotate(45deg);
+        }
+        
+        .triangle-down:hover {
+            border: 2px solid #ff6347;
+            width: 8px;
+            height: 8px;
+            border-left: 0;
+            border-top: 0;
+            transform: rotate(45deg);
+        }
+        
+        .triangle-up:hover {
+            border: 2px solid #ff6347;
+            width: 8px;
+            height: 8px;
+            border-left: 0;
+            border-top: 0;
+            transform: rotate(225deg);
+        }
+        
+        .triangle-up {
+            width: 8px;
+            height: 8px;
+            border: 2px solid #ec0000;
+            border-left: 0;
+            border-top: 0;
+            transform: rotate(225deg);
+        }
+        
+        .triangle-container {
+            display: inline-block;
+            margin: -4px auto;
+            margin-left: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <div id="contenedorPrincipal" class="container ml-0 mr-0 pl-0 pr-0">
+        <!--  SE MANTIENE EL CAMINO, PERO EN LOS ULTIMOS DISEÑOS YA NO VIENEN COMO PARTE DE LA PANTALLA -->
+
+
+
+        <!-- SE INSERTA EL CONTENIDO -->
+
+
+
+
+
+
+
+
+        <script type="text/javascript" language="JavaScript" src="/rioserv-pagos/scripts/jquery-paginador2.js?version=1.4.8"></script>
+        <style>
+            #contenedorPrincipal {
+                max-width: 100% !important;
+            }
+        </style>
+        <script>
+            $(document).ready(function() {
+                $("#contenedorPrincipal").removeClass("ml-1").removeClass("mt-4").removeClass("pb-5");
+                $("#contenedorPrincipal").addClass("ml-0").addClass("mr-0").addClass("pl-0").addClass("pr-0");
+
+            })
+
+            function validarCuit(value) {
+                var form = document.forms['publicForm'];
+                if (chequearCuitCuil("cuitUser", value) == true) {
+                    $('#cuit').removeAttr('disabled');
+                    $('#nombreAcuerdo').removeAttr('disabled');
+                    $('#inputAcuerdo').removeAttr('disabled');
+                    $('#validar').removeAttr('disabled');
+                } else if (chequearCuitCuil("cuitUser", value) == false) {
+                    $('#cuit').prop("disabled", true);
+                    $('#nombreAcuerdo').prop("disabled", true);
+                    $('#inputAcuerdo').prop("disabled", true);
+                    $('#validar').prop("disabled", true);
+                }
+            }
+
+            function cambiarPlaceholder(value) {
+                if (value == 'cuit') {
+                    $('#inputAcuerdo').prop("placeholder", 'CUIT/CUIL');
+                    $('#inputAcuerdo').prop("name", 'cuitAcuerdo');
+                    $('#nombreAcuerdo').removeAttr('checked');
+                    $('#inputAcuerdo').attr("maxlength", '11');
+                    $('#inputAcuerdo').attr("onkeyup", 'validarInputSoloNumerico(this)');
+                    $('#inputAcuerdo').attr("onblur", 'validarInputSoloNumerico(this)');
+                    $('#inputAcuerdo').val('');
+
+                } else if (value == 'descripcionAcuerdo') {
+                    $('#inputAcuerdo').prop("placeholder", 'Nombre del acuerdo');
+                    $('#inputAcuerdo').prop("name", 'descripcionAcuerdo');
+                    $('#cuit').removeAttr('checked');
+                    $('#inputAcuerdo').removeAttr("maxlength");
+                    $('#inputAcuerdo').removeAttr("onkeyup");
+                    $('#inputAcuerdo').removeAttr("onblur");
+                    $('#inputAcuerdo').val('');
+                }
+            }
+            var caracAcuerdos = [];
+
+            function callAcuerdos() {
+                var form = $("#publicForm");
+                $("#modeId").val("getAcuerdos");
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(data, textStatus, jqXHR) {
+                        $("#acuerdo").removeAttr("disabled");
+                        $("#acuerdo").children().remove();
+                        $("#idClientes").children().remove();
+                        $("#acuerdo").append("<option value=''>Seleccione un acuerdo</option>");
+                        $("#idClientes").append("<option value=''>Id cliente</option>");
+                        caracAcuerdos = data;
+                        $.each(data, function(i) {
+
+                            $("#acuerdo").append("<option value='" + data[i].acuerdoFmt + "'>" + data[i].descripcion + "</option>");
+                        });
+
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        //alert("Hubo un error de comunicacion, por favor intente en unos instantes. Error["+errorThrown+"]-["+textStatus+"]");
+                    },
+                    complete: function(jqXHR, textStatus) {},
+                    beforeSend: function(jqXHR, settings) {}
+                });
+
+            }
+
+            function acuerdoHandler(acuerdo) {
+                for (var i = 0; i < caracAcuerdos.length; i++) {
+                    if (caracAcuerdos[i].acuerdoFmt == acuerdo) {
+                        $("#caracteristicaAcuerdo").text(caracAcuerdos[i].caracteristicasAcuerdo);
+                        $("#formaDePago").prop("value", caracAcuerdos[i].formaDePago);
+                        $("#tipoComision").prop("value", caracAcuerdos[i].tipoComision);
+                        $("#descripcionAcuerdo").prop("value", caracAcuerdos[i].descripcion);
+                    }
+                }
+                $('#deudas').addClass('invisible');
+            }
+
+            function validarFormaPago() {
+                var i = 0;
+                var j = 2;
+                var largo = $("#formaDePago").val().length;
+                do {
+                    switch (k = parseInt($("#formaDePago").val().substring(i, j))) {
+                        case 69:
+                            $("#formaDePago").prop("value", "69");
+                            largo = 0;
+                            break;
+                        default:
+                            break;
+                    }
+                    largo = largo - 2;
+                    i = i + 2;
+                    j = j + 2;
+                } while (largo > 0)
+            }
+
+            function callIdCliente() {
+                var form = $("#publicForm");
+                $("#modeId").val("getIdCliente");
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(data, textStatus, jqXHR) {
+                        $("#idClientes").removeAttr("disabled");
+                        $("#idClientes").children().remove();
+                        $("#buscarDocumentos").removeAttr("disabled");
+                        $("#idClienteHidden").prop("value", data[0].descripcion);
+                        $.each(data, function(i) {
+
+                            $("#idClientes").append("<option value='" + data[i].descripcion + "'>" + data[i].descripcion + "</option>");
+                        });
+
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        //alert("Hubo un error de comunicacion, por favor intente en unos instantes. Error["+errorThrown+"]-["+textStatus+"]");
+                    },
+                    complete: function(jqXHR, textStatus) {},
+                    beforeSend: function(jqXHR, settings) {}
+                });
+
+            }
+
+
+            var responseDeudasAjax = []; //llena de objetos
+
+            function informarPagoAjax() {
+
+                var requestDeudadSeleccionadas = [];
+
+                for (var i in responseDeudasAjax) {
+                    if (responseDeudasAjax[i].selected) {
+                        responseDeudasAjax[i].importeUser = $("#importeAPagar_" + responseDeudasAjax[i].id).val()
+                        requestDeudadSeleccionadas[requestDeudadSeleccionadas.length] = responseDeudasAjax[i];
+                    }
+                }
+                $("#documentosJson").val(JSON.stringify(requestDeudadSeleccionadas));
+                callAction({
+                    method: 'generarPagoEnSucursal',
+                    isPopup: true,
+                    popup: {
+                        targetFrameName: 'popUpFrame',
+                        idFrame: 'popUpFrameId'
+                    }
+                });
+                $('#confirmarDocumentos').modal('hide');
+
+            }
+
+            function callDocumentos() {
+                var form = $("#publicForm");
+                $("#modeId").val("getDocumentos");
+                validarFormaPago();
+                if (parseInt($("#formaDePago").val()) == 69) {
+                    $.ajax({
+                        async: false,
+                        type: "POST",
+                        url: "./publicPagInt.do?mode=getDocumentos",
+                        data: form.serialize(),
+                        success: function(response, textStatus, jqXHR) {
+                            $('#deudas').removeClass('invisible');
+                            $('#acuerdoTopTable').text("Acuerdo: " + $('#descripcionAcuerdo').val() + "    ID Cliente: " + $('#idClienteHidden').val());
+                            $('#noPosee').remove('#noPosee');
+                            //$("#idClientes").children().remove();
+                            responseDeudasAjax = response.data;
+                            $("input[name='encodedSession']").val(response.encodedSession)
+                            addItemTable(response.data);
+                            //$.each(data, function(i){
+                            //cashTable.addElement(data[i]);
+
+                            //$("#idClientes").append("<option value='"+data[i].acuerdoFmt+"'>"+data[i].descripcion+"</option>");
+                            //});
+
+
+                        },
+                        error: function(jqXHR, textStatus, errorThrown) {
+                            //alert("Hubo un error de comunicacion, por favor intente en unos instantes. Error["+errorThrown+"]-["+textStatus+"]");
+                        },
+                        complete: function(jqXHR, textStatus) {},
+                        beforeSend: function(jqXHR, settings) {}
+                    });
+                } else {
+                    $('#acuerdoNoHabilitado').modal();
+                }
+
+            }
+
+            function callComisiones() {
+                var requestDeudadSeleccionadas = [];
+
+                for (var i in responseDeudasAjax) {
+                    if (responseDeudasAjax[i].selected) {
+                        requestDeudadSeleccionadas[requestDeudadSeleccionadas.length] = responseDeudasAjax[i];
+                    }
+                }
+                $("#documentosJson").val(JSON.stringify(requestDeudadSeleccionadas));
+                var form = $("#publicForm");
+                $("#modeId").val("getComision");
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: "./publicPagInt.do?mode=getComision",
+                    data: form.serialize(),
+                    success: function(data, textStatus, jqXHR) {
+                        $.each(data, function(i) {
+                            $("#comision").prop("value", data[i].comision);
+                            $("#importeComisionPago").prop("value", data[i].importeComisionPago);
+                            $("#importeIvaComisionPago").prop("value", data[i].importeIvaComisionPago);
+                            $("#importeIvaAdicionalComision").prop("value", data[i].importeIvaAdicionalComision);
+                            $("#importeRetencionIIBB").prop("value", data[i].importeRetencionIIBB);
+
+                        });
+                        $('#modal-descripcionAcuerdo').text(descripcionAcuerdo.value);
+                        $('#confirmarDocumentos').modal();
+
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        //alert("Hubo un error de comunicacion, por favor intente en unos instantes. Error["+errorThrown+"]-["+textStatus+"]");
+                    },
+                    complete: function(jqXHR, textStatus) {},
+                    beforeSend: function(jqXHR, settings) {}
+                });
+
+            }
+
+            var cashTable = null;
+
+            function _onchangeHandlre() {
+                alert(cashTable.getElements(5).tipo);
+            }
+
+
+            function idClienteHandler(value) {
+                if (value != "") {
+                    $('#buscarDocumentos').removeClass('disabled');
+                    $('#idClienteHidden').prop("value", value);
+                }
+
+            }
+
+            function irPagina(navigation, indice) {
+                navigation.position(indice);
+                $(".cash-table-paginate-item").removeClass("cash-selected ");
+                $(".cash-pos-" + indice).addClass("cash-selected");
+            }
+
+
+
+            function validarYSumar(id, importe, value) {
+                if ($("input[value=" + id + "]").prop('checked') == true) {
+                    if (value != null) {
+                        var importeFloat = parseFloat(importe);
+                        var valFloat = parseFloat(value.replace(",", "."));
+                        if (importeFloat >= valFloat) {
+                            var suma = 0.0;
+                            for (var i in responseDeudasAjax) {
+                                if (responseDeudasAjax[i].selected) {
+                                    if ($("#importeAPagar_" + responseDeudasAjax[i].id).val() != null) {
+                                        suma = suma + parseFloat($("#importeAPagar_" + responseDeudasAjax[i].id).val().replace(",", "."));
+                                        $("#importeTotal").val(suma);
+                                        $("#importeTotalFooter").val($("#importeTotal").val().replace(".", ","));
+                                        $('#modal-importeAdeudado').text("$ " + $("#importeTotalFooter").val());
+                                        $('#modal-importeAPagar').text("$ " + $("#importeTotalFooter").val());
+                                    }
+                                }
+                            }
+                        } else {
+                            $("#importeAPagar_" + id).val(0);
+                            $('#valTituloGenerico').text("Aviso");
+                            $('#valBodyGenerico').text("El importe ingresado debe ser igual o menor al importe de la deuda.");
+                            $('#modalGenericoError').modal();
+                        }
+                    }
+                }
+            }
+
+            //funcion seleccion
+            function handlerClickItem(el) {
+                for (var i in responseDeudasAjax) {
+                    if (responseDeudasAjax[i].id == $(el).val()) {
+
+                        responseDeudasAjax[i].selected = $(el).prop("checked");
+                        $("#importeAPagar_" + responseDeudasAjax[i].id).prop("disabled", !$(el).prop("checked"));
+                    }
+                }
+            }
+
+            function validarImporteVacio() {
+                for (var i in responseDeudasAjax) {
+                    if (responseDeudasAjax[i].selected) {
+                        if (!$("#importeAPagar_" + responseDeudasAjax[i].id).val()) {
+                            $('#valTituloGenerico').text("Aviso");
+                            $('#valBodyGenerico').text("Debe completar el importe de las deudas seleccionadas");
+                            $('#modalGenericoError').modal();
+                        } else {
+                            callComisiones();
+                        }
+                    }
+                }
+            }
+
+            function addItemTable(documentosItem) {
+                $("#tbody-deuda").children().remove();
+                $("#tfoot-deuda").children().remove();
+                $.each(documentosItem, function(i) {
+                    var tr = $("<tr></tr>")
+                    var td = $("<td class='text-center'></td>");
+                    if (documentosItem[i].tipo == "Anticipo") {
+                        tr.append(td.clone().addClass("border-right-0").append("<input onclick='handlerClickItem(this)' type='checkbox' class='item-check' value='" + documentosItem[i].id + "'>"));
+                    } else {
+                        tr.append(td.clone().addClass("border-right-0").append("<input type='checkbox'   value=\"" + documentosItem[i].id + "\" disabled='disabled'>"));
+                    }
+
+                    tr.append(td.clone().removeClass("text-center").addClass("text-left").text(documentosItem[i].tipo));
+                    tr.append(td.clone().text(documentosItem[i].numero));
+                    tr.append(td.clone().text(documentosItem[i].cuota));
+                    tr.append(td.clone().text(documentosItem[i].estado));
+                    tr.append(td.clone().text(documentosItem[i].vencimiento));
+                    tr.append(td.clone().text(documentosItem[i].prontoPago));
+                    if (documentosItem[i].tipo == "Anticipo") {
+                        tr.append(td.clone().text("-"));
+                    } else {
+                        tr.append(td.clone().text("$" + documentosItem[i].importeAdeudado));
+                    }
+                    if (documentosItem[i].tipo == "Anticipo") {
+                        tr.append(td.clone().append("<input type='text' placeholder='$0,00' id='importeAPagar_" + documentosItem[i].id +
+                            "' class='text-right mr-2 numericImporte'  disabled onkeyup='validarYSumar(\"" + documentosItem[i].id + "\",\"" + documentosItem[i].importeAdeudado +
+                            "\"," + "this.value" + ")' onblur='validarYSumar(\"" + documentosItem[i].id + "\",\"" + documentosItem[i].importeAdeudado +
+                            "\"," + "this.value" + ")'/>"));
+                    } else {
+                        tr.append(td.clone().append("<input disabled type='text' class='text-right mr-2' placeholder='$0,00'  />"));
+                    }
+                    $("#tbody-deuda").append(tr);
+
+                });
+                var navigation = new $basicWidget.navegationAction($("#tbody-deuda"), 5);
+                var tr = $("<tr></tr>");
+                var tr2 = $("<tr></tr>");
+                var td = $("<td class='text-center' colspan='8'></td>");
+                var span = $("<span class='cash-table-paginate-item'></span>");
+                var spanSeparador = $("<span class='cash-table-paginate-item-separator'>-</span>");
+                var cant = navigation.cantPage();
+                if (cant > 1) {
+                    td.append(span.clone().addClass("cash-selected cash-pos-1").text(1).click(function() {
+                        irPagina(navigation, 1);
+                    }));
+                    td.append(spanSeparador.clone());
+                    for (var i = 2; i <= cant; i++) {
+                        td.append(span.clone().addClass("cash-pos-" + i).text(i).click(function() {
+
+                            irPagina(navigation, $(this).text());
+                        }));
+                        if (i != cant) {
+                            td.append(spanSeparador.clone());
+                        }
+                    }
+                }
+
+                tr2.append($("<td class='text-center' colspan='8'></td><td class='text-right '><span class ='mr-3'><b>Total</b></span></td>"));
+                tr.append(td);
+                tr.append($("<td class='text-center'><input type='text' class='text-right mr-2' value='0,00' id='importeTotalFooter' disabled /></td>"));
+                $("#tfoot-deuda").append(tr2);
+                $("#tfoot-deuda").append(tr);
+                $(".numericImporte").numeric({
+                    decimal: ",",
+                    decimalPlaces: 2
+                });
+            }
+
+            function informarPago() {
+                var form = $("#publicForm");
+                $("#modeId").val("generarPagoEnSucursal");
+                $.ajax({
+                    async: false,
+                    type: "POST",
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function(data, textStatus, jqXHR) {
+
+                        $('#modal-descripcionAcuerdo').text(descripcionAcuerdo.value);
+                        $('#confirmarDocumentos').modal();
+
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        //alert("Hubo un error de comunicacion, por favor intente en unos instantes. Error["+errorThrown+"]-["+textStatus+"]");
+                    },
+                    complete: function(jqXHR, textStatus) {},
+                    beforeSend: function(jqXHR, settings) {}
+                });
+
+            }
+
+
+            function sortTable(name, compareCallback, dir) {
+                $("#loadingGif").show();
+
+                sorTableGeneric(name, compareCallback, dir, responseDeudasAjax);
+
+                addItemTable(responseDeudasAjax);
+                $("#loadingGif").hide();
+            }
+
+            function compareString(elementA, elementB, sortType) {
+
+                return elementA.localeCompare(elementB);
+            }
+
+            function compareInt(elementA, elementB, sortType) {
+                var num1, num2;
+                num1 = parseInt(elementA);
+                num2 = parseInt(elementB);
+
+                if (num1 > num2) {
+                    return 1;
+                } else if (num1 < num2) {
+                    return -1;
+                }
+                return 0;
+            }
+
+            function compareDates(elementA, elementB, sortType) {
+                var datePartsA = elementA.split("/");
+                var datePartsB = elementB.split("/");
+                dateA = new Date(+datePartsA[2], datePartsA[1] - 1, +datePartsA[0]);
+                dateB = new Date(+datePartsB[2], datePartsB[1] - 1, +datePartsB[0]);
+
+                if (sortType == "asc") {
+                    return dateA > dateB;
+                } else if (sortType == "desc") {
+                    return dateA < dateB;
+                }
+            }
+
+            function compareNumbers(elementA, elementB, sortType) {
+                numberA = parseFloat(convertFormatedNumber(elementA.replace('$', '')));
+                numberB = parseFloat(convertFormatedNumber(elementB.replace('$', '')));
+
+                if (sortType == "asc") {
+                    return numberA > numberB;
+                } else if (sortType == "desc") {
+                    return numberA < numberB;
+                }
+            }
+
+            function sorTableGeneric(name, compareCallback, dir, list) {
+                list.sort(function(item, item2) {
+                    return compareCallback(item[name], item2[name], dir);
+                });
+                if (dir == "desc") {
+                    list.reverse();
+                }
+            }
+
+            function ocultarDeudas() {
+                $('#deudas').addClass('invisible');
+            }
+
+            function opcionCancelar() {
+                mostrarVentanaPrincipal('publicForm', 'popUpFrameId');
+            }
+        </script>
+        <style>
+            .thumbnail {
+                display: block;
+                padding: 4px;
+                margin-bottom: 20px;
+                line-height: 1.42857143;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                -webkit-transition: border .2s ease-in-out;
+                -o-transition: border .2s ease-in-out;
+                transition: border .2s ease-in-out;
+            }
+            
+            .fb-image-profile {
+                margin: -147px 10px 0px 100px;
+                z-index: 9;
+                width: 20%;
+                position: relative;
+                width: 362px;
+                height: 180px;
+            }
+            
+            .fb-profile img.fb-image-lg {
+                z-index: 0;
+                width: 100%;
+                margin-bottom: 10px;
+                background-color: #deedf2;
+                height: 248px;
+            }
+            
+            .Todas-1 {
+                width: 70%;
+                height: 248px;
+                object-fit: contain;
+            }
+            
+            .center {
+                margin: auto;
+                width: 50%;
+            }
+            
+            .center-button {
+                margin: auto;
+                display: inline-block;
+                width: 100%
+            }
+            
+            .bton:focus,
+            .bton:active:focus,
+            .bton.active:focus {
+                outline: none;
+            }
+        </style>
+        <div class="container-fluid">
+            <div class="fb-profile">
+
+                <div align="left" class="fb-image-lg" style="background-color: #deedf2;height: 248px; width: 100%"><img src="../images/public/todas-1.png" srcset="img/todas-1@2x.png 2x,
+                 img/todas-1@3x.png 3x" class="float-right Todas-1"></div>
+                <div align="left" class="fb-image-profile thumbnail pt-5 pl-5">
+                    <h5>Gestioná tus pagos de <span class="santander-bold">recaudación por acuerdo</span></h5>
+                </div>
+
+            </div>
+        </div>
+        <!-- /container -->
+
+        <div class="container">
+
+            <form action="/rioserv-pagos/publicPagInt.do" id="publicForm" method="POST">
+                <input type="hidden" name="encodedSession" id="encodedSession">
+                <input type="hidden" name="mode" id="modeId">
+                <input type="hidden" name="formaDePago" id="formaDePago">
+                <input type="hidden" name="tipoComision" id="tipoComision">
+                <input type="hidden" name="comision" id="comision">
+                <input type="hidden" name="importeComisionPago" id="importeComisionPago">
+                <input type="hidden" name="importeIvaComisionPago" id="importeIvaComisionPago">
+                <input type="hidden" name="importeIvaAdicionalComision" id="importeIvaAdicionalComision">
+                <input type="hidden" name="importeRetencionIIBB" id="importeRetencionIIBB">
+                <input type="hidden" name="descripcionAcuerdo" id="descripcionAcuerdo">
+                <input type="hidden" name="documentosJson" id="documentosJson">
+                <input type="hidden" name="importeTotal" id="importeTotal">
+                <input type="hidden" name="idClienteHidden" id="idClienteHidden">
+                <h2 class="mt-5">Generá un ID para realizar tus pagos</h2>
+                <p class="text-medium mt-5">Antes de dirigirte a la sucursal para hacer el pago, necesitás <span class="santander-bold">generar un ID de pago.</span><br> No es necesario que seas cliente Santander para obtenerlo.</p>
+                <div class="form-group pt-5">
+                    <span class="text-large santander-bold">Datos del cliente a pagar</span>
+
+                    <div class="border-bottom"></div>
+                    <div class="pt-4 ml-4">
+                        <input type="text" name="cuitUser" id="cuitUser" placeholder="CUIT/CUIL" maxlength="11" onkeyup="validarInputSoloNumerico(this)" onblur="validarInputSoloNumerico(this);" onfocusout="validarCuit(value)" size="37">
+                    </div>
+                </div>
+
+                <div class="form-group pt-5">
+                    <span class="text-large santander-bold">Datos de la empresa recuadadora</span>
+                    <div class="border-bottom"></div>
+                    <div class="pt-4 ml-4">
+                        <div class="form-check form-check-inline ">
+                            <input class="form-check-input" type="radio" id="cuit" value="cuit" disabled="" onclick="cambiarPlaceholder(value)" checked="">
+                            <label class="form-check-label" for="cuitAcuerdo"> CUIT/CUIL</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" id="nombreAcuerdo" value="descripcionAcuerdo" disabled="" onclick="cambiarPlaceholder(value)">
+                            <label class="form-check-label" for="descripcionAcuerdo"> Nombre del acuerdo</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="pt-3 ml-4 col-md-4">
+                        <input type="text" id="inputAcuerdo" name="cuitAcuerdo" placeholder="CUIT/CUIL" size="37" disabled="" maxlength="11" onkeyup="validarInputSoloNumerico(this)" onblur="validarInputSoloNumerico(this);">
+                    </div>
+                    <div class="pt-1 col-md-4">
+                        <button onclick="callAcuerdos()" type="button" class="btn cash-button-white bton" disabled="" id="validar"><div style="width: 84px">Validar</div></button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="pt-5 ml-4 col-md-5">
+                        <select id="acuerdo" name="acuerdo" onchange="callIdCliente(); acuerdoHandler(this.value)" disabled="" style="width: 470px;">
+                <option>Seleccione un acuerdo</option>
+                <option value="option" label="label"></option>
+                </select>
+                        <div>
+                            <span id="caracteristicaAcuerdo"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="pt-4 pb-4 ml-4 col-md-5">
+                        <select id="idClientes" name="idCliente" disabled="" placeholder="Número de cliente" onchange="idClienteHandler(this.value)" style="width: 470px;"><option>Id cliente</option></select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="pt-5 ml-4">
+                        <button id="buscarDocumentos" onclick="callDocumentos()" type="button" class="btn cash-button-red bton" disabled=""><div>Buscar documentos</div></button>
+                    </div>
+                </div>
+
+                <div class="pt-4 invisible" id="deudas">
+                    <div class="border-bottom row">
+                        <div class="col">
+                            <h6>Seleccioná los documentos a pagar</h6>
+                        </div>
+                        <div class="col float-right"><span class="text-right pt-4 text-small" id="acuerdoTopTable"></span></div>
+                    </div>
+                    <div class="pt-4">
+                        <table class=" cash-table-list border rounded" id="tablaSolicitud" align="">
+                            <thead>
+                                <tr>
+                                    <th width="1%" scope="col" class="cash-table-field-check border-bottom">
+                                        <!-- Default unchecked -->
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" id="tableDefaultCheck1">
+                                            <label class="custom-control-label" for="tableDefaultCheck1"></label>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Tipo
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('tipo',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('tipo',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Número
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('id',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('id',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Cuota
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('cuota',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('cuota',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Estado
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('estado',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('estado',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Vencimiento
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('vencimiento',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('vencimiento',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Pronto pago
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('prontoPago',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('prontoPago',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Importe adeudado
+                                        <div class="triangle-container">
+                                            <div class="triangle-up" onclick="sortTable('importeAdeudado',compareString,'asc')"></div>
+                                            <div class="triangle-down" onclick="sortTable('importeAdeudado',compareString,'desc')"></div>
+                                        </div>
+                                    </th>
+                                    <th scope="col" class="th-sm">Importe a pagar</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbody-deuda">
+                                <tr>
+                                    <td colspan="9" id="noPosee">No posee</td>
+                                </tr>
+                            </tbody>
+
+                            <tfoot id="tfoot-deuda">
+
+                            </tfoot>
+                        </table>
+                    </div>
+                    <div>
+
+                    </div>
+                    <div class="pt-4 ml-4">
+                        <button onclick="validarImporteVacio() " type="button" class="btn cash-button-red bton" id="informarPago"><div>Generar ID de pago</div></button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+
+        <iframe class="hiding" width="100%" name="popUpFrame" id="popUpFrameId" src="" scrolling="auto" style="border-style: none;border: hidden;height: 100%;" frameborder="0"></iframe>
+
+        <!-- Modal Confirmar Documentos-->
+        <div class="modal fade" id="confirmarDocumentos" tabindex="-1" role="dialog" aria-labelledby="confirmarDocumentosLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="pt-4 pb-4 ml-4">
+                        <center>
+                            <h6 class="modal-title text-justify" id="confirmarDocumentosLabel">¿Querés generar el ID para realizar este pago?</h6>
+                        </center>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="pt-1 ml-4 mr-4">
+                                <div>Descripción del acuerdo</div>
+                                <div id="modal-descripcionAcuerdo"></div>
+                                <div class="border-bottom"></div>
+                            </div>
+                            <div class="pt-1 ml-4 mr-4">
+                                <div>Importe adeudado</div>
+                                <div id="modal-importeAdeudado"></div>
+                                <div class="border-bottom"></div>
+                            </div>
+                            <div class="pt-1 ml-4 mr-4 pb-4">
+                                <div>Importe total a pagar</div>
+                                <div id="modal-importeAPagar"></div>
+                                <div class="border-bottom"></div>
+                            </div>
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <div class="card" style="width: 80%; background-color: #d5e8ee">
+                                    <div class="card-header">El ID será <b>válido por 48hs.</b> Luego tendrás que <b>generar un nuevo</b> para realizar este pago.</div>
+                                </div>
+                            </div>
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <button type="button" class="btn cash-button-white mr-3 bton" data-dismiss="modal"><div>No, cancelar</div></button>
+                                <button type="button" class="btn cash-button-red bton" onclick="informarPagoAjax()"><div>Si, generar</div></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Acuerdo no habilitado -->
+        <div class="modal fade" id="acuerdoNoHabilitado" tabindex="-1" role="dialog" aria-labelledby="acuerdoNoHabilitadoLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="pt-4 d-flex justify-content-center border-0">
+                        <center>
+                            <h4 class="modal-title text-center" id="tituloAcuerdoNoHabilitadoLabel">Este acuerdo no está habilitado para pagar por sucursal.</h4>
+                        </center>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <div class="d-flex justify-content-center border-0 text-center">Por favor, seleccioná otro acuerdo o comunicate con la empresa recaudadora.</div>
+                            </div>
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <button type="button" class="btn cash-button-red bton" data-dismiss="modal"><div>Entendido</div></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Importe adeudado menor a importe a pagar -->
+        <div class="modal fade" id="modalGenericoError" tabindex="-1" role="dialog" aria-labelledby="modalGenericoErrorLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="pt-4 d-flex justify-content-center border-0">
+                        <center>
+                            <h4 class="modal-title text-center" id="valTituloGenerico"></h4>
+                        </center>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <div class="d-flex justify-content-center border-0 text-center" id="valBodyGenerico"></div>
+                            </div>
+                            <div class="pt-4 d-flex justify-content-center border-0">
+                                <button type="button" class="btn cash-button-red bton" data-dismiss="modal"><div>Entendido</div></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- GIF DE CARGA  -->
+        <div id="loadingGif" class="whirl" style="display:none">
+
+
+        </div>
+
+
+
+        <div id="myModal" class="modal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content rounded-0" style=" width: 312px !important;height: 216px !important">
+                    <div class="modal-header border-0">
+                        <span class="modal-title text-center santander-bold" id="mensajeTitle">
+            <!-- se muestra el textos -->
+            </span>
+
+                    </div>
+                    <div class="modal-body text-center border-0">
+                        <span id="mensajeBody" style="width:300px"></span>
+
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center border-0">
+                        <div class="botones" id="botones">
+                            <!-- se muestran los botones -->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/javascript">
+        /**
+         * Handle error messages.
+         * @param messages Array of error messages.
+         * @param focusField Field to set focus on.
+         */
+        function jcv_handleErrors(messages, focusField) {
+            if (focusField && focusField != null) {
+                var doFocus = true;
+                if (focusField.disabled || focusField.type == 'hidden') {
+                    doFocus = false;
+                }
+                if (doFocus &&
+                    focusField.style &&
+                    focusField.style.visibility &&
+                    focusField.style.visibility == 'hidden') {
+                    doFocus = false;
+                }
+                if (doFocus) {
+                    focusField.focus();
+                }
+            }
+            mostrarAviso(messages.join('\n'));
+        }
+    </script>
+
+
+
+</body>
+
+</html>
